@@ -1,0 +1,33 @@
+
+syntax = "proto3";
+
+package chat;
+
+service Chat {
+
+  rpc joinChat (JoinChatRequest) returns (stream JoinChatResponse);
+
+  rpc SendMessage (SendMessageRequest) returns (SendMessageResponse);
+
+}
+
+message SendMessageRequest {
+  string message = 1;
+  string senderid = 2;
+}
+
+message SendMessageResponse {
+  string status = 1;
+}
+
+message JoinChatRequest {
+  string username = 1;
+}
+
+message JoinChatResponse {
+  string receiverid = 1;
+  string senderid = 2;
+  string message = 3;
+  repeated string usernames = 4;
+  string messagetype = 5;
+}

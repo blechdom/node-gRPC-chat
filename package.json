@@ -1,0 +1,23 @@
+{
+  "name": "node-grpc-chat-tutorial",
+  "version": "0.1.0",
+  "description": "node-grpc-chat-tutorial",
+  "devDependencies": {
+    "@grpc/proto-loader": "^0.3.0",
+    "google-protobuf": "^3.6.1",
+    "grpc": "^1.15.0",
+    "grpc-web": "^1.0.0",
+    "lodash": "^4.6.1",
+    "webpack": "^4.16.5",
+    "webpack-cli": "^3.1.0"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "build": "rm -rf ./dist && npx webpack client.js"
+  },
+  "dependencies": {
+    "@google-cloud/speech": "^2.2.0",
+    "events": "^3.0.0",
+    "socket.io": "^2.2.0"
+  }
+}
