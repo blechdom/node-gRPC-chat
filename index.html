@@ -13,16 +13,22 @@
 
   </head>
   <body>
-    <div class="row justify-content-md-center"><h2>gRPC-web Chat App</h2></div>
+    <div class="row justify-content-md-center p-3"><h2>gRPC-web Chat App</h2></div>
     <div id="join-div">
-      <div class="row justify-content-md-center">
-        <h5>Username</h5>
+      <div class="form-group row justify-content-md-center">
+        <div class="col-xs-3">
+            <h5>Username</h5>
+        </div>
       </div>
-      <div class="row justify-content-md-center p-3">
-        <input type="text" class="write_msg" placeholder="Type Username" id="username-input"/>
+      <div class="form-group row justify-content-md-center">
+        <div class="col-xs-3">
+          <input type="text" class="write_msg form-control" placeholder="Enter Username" id="username-input"/>
+        </div>
       </div>
-      <div  class="row justify-content-md-center">
-        <button class="btn btn-info" style="background-color: DodgerBlue;" type="button" id="join-btn">Join Chat</button>
+      <div class="form-group row justify-content-md-center">
+        <div class="col-xs-3">
+          <button class="btn btn-info" style="background-color: DodgerBlue;" type="button" id="join-btn">Join Chat</button>
+        </div>
       </div>
     </div>
     <div class="messaging" id="chat-div">
