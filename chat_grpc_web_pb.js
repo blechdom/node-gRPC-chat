@@ -78,7 +78,7 @@ proto.chat.ChatPromiseClient =
  *   !proto.chat.JoinChatRequest,
  *   !proto.chat.JoinChatResponse>}
  */
-const methodInfo_Chat_joinChat = new grpc.web.AbstractClientBase.MethodInfo(
+const methodInfo_Chat_JoinChat = new grpc.web.AbstractClientBase.MethodInfo(
   proto.chat.JoinChatResponse,
   /** @param {!proto.chat.JoinChatRequest} request */
   function(request) {
@@ -98,10 +98,10 @@ const methodInfo_Chat_joinChat = new grpc.web.AbstractClientBase.MethodInfo(
 proto.chat.ChatClient.prototype.joinChat =
     function(request, metadata) {
   return this.client_.serverStreaming(this.hostname_ +
-      '/chat.Chat/joinChat',
+      '/chat.Chat/JoinChat',
       request,
       metadata,
-      methodInfo_Chat_joinChat);
+      methodInfo_Chat_JoinChat);
 };
 
 
@@ -115,10 +115,10 @@ proto.chat.ChatClient.prototype.joinChat =
 proto.chat.ChatPromiseClient.prototype.joinChat =
     function(request, metadata) {
   return this.delegateClient_.client_.serverStreaming(this.delegateClient_.hostname_ +
-      '/chat.Chat/joinChat',
+      '/chat.Chat/JoinChat',
       request,
       metadata,
-      methodInfo_Chat_joinChat);
+      methodInfo_Chat_JoinChat);
 };
 
 
@@ -171,6 +171,62 @@ proto.chat.ChatPromiseClient.prototype.sendMessage =
     function(request, metadata) {
   return new Promise((resolve, reject) => {
     this.delegateClient_.sendMessage(
+      request, metadata, (error, response) => {
+        error ? reject(error) : resolve(response);
+      });
+  });
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.AbstractClientBase.MethodInfo<
+ *   !proto.chat.LeaveChatRequest,
+ *   !proto.chat.LeaveChatResponse>}
+ */
+const methodInfo_Chat_LeaveChat = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.chat.LeaveChatResponse,
+  /** @param {!proto.chat.LeaveChatRequest} request */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.chat.LeaveChatResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.chat.LeaveChatRequest} request The
+ *     request proto
+ * @param {!Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.Error, ?proto.chat.LeaveChatResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.chat.LeaveChatResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.chat.ChatClient.prototype.leaveChat =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/chat.Chat/LeaveChat',
+      request,
+      metadata,
+      methodInfo_Chat_LeaveChat,
+      callback);
+};
+
+
+/**
+ * @param {!proto.chat.LeaveChatRequest} request The
+ *     request proto
+ * @param {!Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.chat.LeaveChatResponse>}
+ *     The XHR Node Readable Stream
+ */
+proto.chat.ChatPromiseClient.prototype.leaveChat =
+    function(request, metadata) {
+  return new Promise((resolve, reject) => {
+    this.delegateClient_.leaveChat(
       request, metadata, (error, response) => {
         error ? reject(error) : resolve(response);
       });

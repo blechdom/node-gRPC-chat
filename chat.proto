@@ -5,9 +5,11 @@ package chat;
 
 service Chat {
 
-  rpc joinChat (JoinChatRequest) returns (stream JoinChatResponse);
+  rpc JoinChat (JoinChatRequest) returns (stream JoinChatResponse);
 
   rpc SendMessage (SendMessageRequest) returns (SendMessageResponse);
+
+  rpc LeaveChat (LeaveChatRequest) returns (LeaveChatResponse);
 
 }
 
@@ -24,15 +26,24 @@ message JoinChatRequest {
   string username = 1;
 }
 
+message User {
+  string userid = 1;
+  string username = 2;
+}
+
 message JoinChatResponse {
   string receiverid = 1;
   string senderid = 2;
   string message = 3;
-  repeated User usernames = 4;
-  string messagetype = 6;
+  repeated User users = 4;
+  string messagetype = 5;
 }
 
-message User {
-  string username = 1;
-  string userid = 2;
+message LeaveChatRequest {
+  string senderid = 1;
+  string username = 2;
+}
+
+message LeaveChatResponse {
+  string status = 1;
 }

@@ -23,30 +23,31 @@ var call_array = [];
 var user_array = [];
 
 async function doJoinChat(call) {
-
   var username = call.request.username;
   var requestID = call.metadata._internal_repr["x-request-id"];
-  user_array.push({username: username, userid: requestID});
+  user_array.push({
+    userid: requestID[0],
+    username: username
+  });
 
-  console.log("username_array " + user_array);
-
+  console.log("username_array " + JSON.stringify(user_array));
 
   var joinMessage = {
     message: username + " joined the chat",
-    senderID: requestID,
+    senderID: requestID[0],
     messageType: "update"
   };
 
   console.log(username + " joined the chatroom with ID: " + requestID[0]);
 
-  console.log("call array length: " + call_array.length);
+  console.log("call array length: " + user_array.length);
 
   messageEmitter.on('chatMessage', function(chatMessage) {
       call.write({
-        receiverid: requestID,
+        receiverid: requestID[0],
         senderid: chatMessage.senderID,
         message: chatMessage.message,
-        usernames: user_array,
+        users: user_array,
         messagetype: chatMessage.messageType
       });
   });
@@ -71,11 +72,37 @@ function doSendMessage(call, callback) {
   callback(null, {status: "message-received"});
 }
 
+function doLeaveChat(call, callback) {
+  var senderID = call.request.senderid;
+  var username = call.request.username;
+
+  for(var i = 0; i < user_array.length; i++) {
+    if(user_array[i].userid == senderID) {
+        user_array.splice(i, 1);
+        break;
+    }
+  }
+  var leaveMessage = username + " has left the chat.";
+  var chatMessage = {
+    message: leaveMessage,
+    senderID: senderID,
+    messageType: "update"
+  };
+  console.log("message received: " + JSON.stringify(chatMessage));
+  try {
+    messageEmitter.emit('chatMessage', chatMessage);
+  } catch(err) {
+    console.error('caught while emitting:', err.message);
+  }
+  callback(null, {status: "message-received"});
+}
+
 function getServer() {
   var server = new grpc.Server();
   server.addService(chat.Chat.service, {
     joinChat: doJoinChat,
-    sendMessage: doSendMessage
+    sendMessage: doSendMessage,
+    leaveChat: doLeaveChat
   });
   console.log("Chat Server Started");
   return server;

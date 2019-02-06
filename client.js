@@ -12,11 +12,14 @@ window.onload = function(){
   joinDiv.style.visibility = "visible";
   var receiverID = '';
   var usernames = [];
+  var myUsername = '';
 
   const { JoinChatRequest,
           JoinChatResponse,
           SendMessageRequest,
           SendMessageResponse,
+          LeaveChatRequest,
+          LeaveChatResponse
         } = require('./chat_pb.js');
 
   const {ChatClient} = require('./chat_grpc_web_pb.js');
@@ -24,23 +27,23 @@ window.onload = function(){
   var client = new ChatClient('http://' + window.location.hostname + ':8080', null, null);
 
   joinButton.onclick = function(){
-    if(usernameInput.value){
+    myUsername = usernameInput.value;
+    if(myUsername){
 
       var joinChatRequest = new JoinChatRequest();
 
-      joinChatRequest.setUsername(usernameInput.value);
+      joinChatRequest.setUsername(myUsername);
 
       var chatStream = client.joinChat(joinChatRequest, {});
       joinDiv.innerHTML = "";
       chatDiv.style.visibility = "visible";
 
       chatStream.on('data', (response) => {
-        console.log(JSON.stringify(response, null, 4));
         receiverID = response.getReceiverid();
         senderID = response.getSenderid();
         var messageType = response.getMessagetype();
         var newMessage = response.getMessage();
-        console.log("receiveid: " + receiverID + " senderid: " + senderID + " message: " + newMessage);
+
         var formattedMessage = "";
         if(messageType==="update"){
           messageHistory.innerHTML += '<div class="update_chat"><p class="update_chat">' + newMessage + '</p></div>';
@@ -49,20 +52,24 @@ window.onload = function(){
           messageHistory.innerHTML += '<div class="update_chat danger"><p class="update_chat">ERROR: ' + newMessage + '</p></div>';
         }
         else if(receiverID===senderID){
-          messageHistory.innerHTML += '<div class="outgoing_msg"><div class="sent_msg"><p>' + newMessage + '</p><span class="time_date">' + senderID + '</span></div></div>';
+          messageHistory.innerHTML += '<div class="outgoing_msg"><div class="sent_msg"><p>' + newMessage + '</p></div></div>';
         }
         else {
-          messageHistory.innerHTML += '<div class="incoming_msg"><div class="incoming_msg_img"><img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"></div><div class="received_msg"><div class="received_withd_msg"><p>' + newMessage + '</p><span class="time_date">' + senderID + '</span></div></div></div>';
+          messageHistory.innerHTML += '<div class="incoming_msg"><div class="incoming_msg_img"><img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"></div><div class="received_msg"><div class="received_withd_msg"><p>' + newMessage + '</p></div></div></div>';
         }
 
         messageInput.value = "";
-        usernames = response.getUsernamesList();
+        usernames = response.getUsersList();
+        usernameList.innerHTML = "";
 
-        for(var i=0; i<usernames.length; i++){
-          usernameList.innerHTML += '<div class="chat_list"><div class="chat_people"><div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div><div class="chat_ib"><h5>' +
-          usernames[i] + '</h5></div></div></div>';
+        for (var i=0; i< usernames.length; i++){
+          var user = usernames[i];
+          var activeChatDiv = '<div class="chat_list">';
+          if(senderID===user.getUserid()){
+            	activeChatDiv = '<div class="chat_list active_chat">';
+          }
+          usernameList.innerHTML += activeChatDiv + '<div class="chat_people"><div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div><div class="chat_ib"><h5>' + user.getUsername() + '</h5></div></div></div>';
         }
-        //usernameList.innerHTML = usernameHTML;
       });
     }
     else {
@@ -76,11 +83,19 @@ window.onload = function(){
       request.setMessage(messageInput.value);
       request.setSenderid(receiverID);
       client.sendMessage(request, {}, (err, response) => {
-        console.log(response.getStatus());
+
       });
     }
     else {
       alert("no message input");
     }
   }
+  window.addEventListener('beforeunload', function(event) {
+    var request = new LeaveChatRequest();
+    request.setSenderid(receiverID);
+    request.setUsername(myUsername);
+    client.leaveChat(request, {}, (err, response) => {
+      console.log("Removed from Chat User List");
+    });
+  });
 };
