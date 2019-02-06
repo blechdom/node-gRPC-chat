@@ -20,14 +20,17 @@ var packageDefinition = protoLoader.loadSync(
 var protoDescriptor = grpc.loadPackageDefinition(packageDefinition);
 var chat = protoDescriptor.chat;
 var call_array = [];
-var username_array = [];
+var user_array = [];
 
 async function doJoinChat(call) {
 
   var username = call.request.username;
-  username_array.push(username);
-  console.log("username_array " + username_array);
   var requestID = call.metadata._internal_repr["x-request-id"];
+  user_array.push({username: username, userid: requestID});
+
+  console.log("username_array " + user_array);
+
+
   var joinMessage = {
     message: username + " joined the chat",
     senderID: requestID,
@@ -43,7 +46,7 @@ async function doJoinChat(call) {
         receiverid: requestID,
         senderid: chatMessage.senderID,
         message: chatMessage.message,
-        usernames: username_array,
+        usernames: user_array,
         messagetype: chatMessage.messageType
       });
   });

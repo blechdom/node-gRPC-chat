@@ -55,7 +55,7 @@ h5 {
 }
 
 .recent_heading h4 {
-	color: #0465ac;
+	color: DodgerBlue;
     font-size: 16px;
     margin: auto;
     line-height: 29px;
@@ -191,7 +191,7 @@ h5 {
 }
 
 .sent_msg p {
-	background:#0465ac;
+	background:DodgerBlue;
 	border-radius: 15px 15px 0px 15px;
 	font-size: 14px;
 	margin: 0;
@@ -231,7 +231,7 @@ h5 {
 }
 
 .msg_send_btn {
-	background: #05728f none repeat scroll 0 0;
+	background: DodgerBlue none repeat scroll 0 0;
 	border:none;
 	border-radius: 50%;
 	color: #fff;

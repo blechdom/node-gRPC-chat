@@ -28,6 +28,11 @@ message JoinChatResponse {
   string receiverid = 1;
   string senderid = 2;
   string message = 3;
-  repeated string usernames = 4;
-  string messagetype = 5;
+  repeated User usernames = 4;
+  string messagetype = 6;
+}
+
+message User {
+  string username = 1;
+  string userid = 2;
 }
